@@ -2,6 +2,7 @@ language: node_js
 node_js:
  - "9.5"
 install:
+  - yarn
   - yarn build
 script:
   - yarn start:tests
