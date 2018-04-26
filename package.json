@@ -23,6 +23,7 @@
     "error-to-json": "^1.1.0",
     "express": "^4.16.3",
     "get-stdin": "^6.0.0",
+    "kill-port": "^1.1.0",
     "log-driver": "^1.2.7",
     "nodemon": "^1.17.3",
     "promise-sequential": "^1.1.1",

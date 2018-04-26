@@ -11,7 +11,7 @@ test('getFunctions', async function (t) {
     	let files = await p
     	t.equal(files instanceof Array,true);
     	await modules.installer.writeFunction('fsTest','//empty')
-    	t.equal(files.length>0,true)
+    	t.equal(files.length>0,true,'Function files list should be greater than 0 : '+files.length)
     }catch(err){
     	console.error(err.message)
     	t.end(err)

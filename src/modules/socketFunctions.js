@@ -3,7 +3,7 @@ var modules = require('./')
 import shelljs from 'shelljs'
 var errToJSON = require('error-to-json')
 module.exports = {
-	call,
+	run,
 	exec
 }
 
@@ -20,12 +20,12 @@ function exec(socket){
 	}
 }
 
-function call(socket) {
-	return async (params) => {
-		console.log('call', params)
-		if (!params.id) {
+function run(socket) {
+	return async (options) => {
+		console.log('run', options)
+		if (!options.id) {
 			socket.emit('logWorkerManagerError', {
-				message: 'call function expected params.id'
+				message: 'run function expected params.id'
 			})
 		}
 		var res
@@ -33,7 +33,9 @@ function call(socket) {
 
 			res = {
 				err: null,
-				result: await eval(`(async function evaluation(){return await modules.workerManager.${params.name}()})()`)
+				result: await eval(`(async function evaluation(){
+					var params = ${JSON.stringify(options.params||{},null,2)};
+					return await modules.workerManager.${options.name}(params)})()`)
 			}
 		} catch (err) {
 			res = {
@@ -41,7 +43,7 @@ function call(socket) {
 			}
 
 		}
-		console.log('callResponse_', res)
-		socket.emit('callResponse_' + params.id, res)
+		console.log('run_after_' + options.id, res)
+		socket.emit('run_after_' + options.id, res)
 	}
 }

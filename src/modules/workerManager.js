@@ -1,3 +1,7 @@
+import shelljs from 'shelljs'
+const kill = require('kill-port')
+const modules = require('./')
+
 var worker = null
 
 module.exports = {
@@ -6,10 +10,11 @@ module.exports = {
 	checkStatus
 }
 
-function stop() {
+async function stop() {
 	if (worker && !worker.killed) {
 		worker.kill()
 	}
+	await kill(process.env.PORT)
 }
 
 async function checkStatus() {
@@ -19,12 +24,19 @@ async function checkStatus() {
 	}
 }
 
-function start(options = {}) {
-	if (worker && !worker.killed) {
-		worker.kill()
-	}
+async function start(options = {}) {
+	await stop()
+	
 	const workingPath = modules.fs.getWorkingPath()
-	worker = shelljs.exec(`node ${workingPath}/server.js 2>&1 | node ${workingPath}/scripts/stdin.js`, { // >> somefile.log 
+
+	var cmd = `node ${workingPath}/server.js 2>&1 | node ${workingPath}/scripts/stdin.js`;
+
+	if(process.env.NODE_ENV !=='production'){
+		//run babel-node
+		cmd = `npx babel-node ${workingPath}/server.js 2>&1 | npx babel-node ${workingPath}/scripts/stdin.js`
+	}
+
+	worker = shelljs.exec(cmd, { // >> somefile.log 
 		async: true,
 		env: Object.assign({},process.env,options.env||{}),
 		cwd: process.cwd()

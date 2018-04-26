@@ -1,8 +1,9 @@
-const console = require('../modules/console').create(require('path').basename(__filename))
+const modules = require('./modules')
+const console = modules.console.create(require('path').basename(__filename))
 var path = require('path');
 var scriptName = path.basename(__filename);
 const express = require('express')
-const modules = require('./modules')
+
 const app = express()
 var server = require('http').Server(app);
 if (!process.env.PORT) throw new Error('PORT required');

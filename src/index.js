@@ -20,5 +20,5 @@ modules.wrapkendSocket.mount(socket => {
 		modules.workerManager.stop()
 	})
 	socket.on('exec', modules.socketFunctions.exec(socket))
-	socket.on('call', modules.socketFunctions.call(socket))
+	socket.on('run', modules.socketFunctions.run(socket))
 })

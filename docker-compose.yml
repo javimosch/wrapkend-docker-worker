@@ -1,39 +1,37 @@
 version: "3"
 services:
-
-  db:
-    image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGODB_USER="root" 
-      - MONGODB_PASS="root"
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
+  sshd:
+    container_name: wdw_ssh
+    image: maltyxx/sshd
     volumes:
-      - db-data:/data/db:/data/db
+        - ${SSH_ROOT}:/share
     networks:
       - backend
     ports:
-        - 27017:27017
+        - "${SSH_PORT}:22"
+    command: ${SSH_USER}:${SSH_PASS}:1001:1001
+  db:
+    container_name: wdw_db
+    image: mongo:latest
+    env_file: .env
+    volumes:
+      - db-data:/data/db
+    networks:
+      - backend
+    ports:
+        - ${DB_PORT}:27017
     command: mongod --smallfiles --logpath=/dev/null # --quiet
   
   worker:
+    container_name: wdw_worker
     env_file: .env
-    image: ./
-    volumes:
-      - $(pwd):/app
+    build: ./
     ports:
-      - "3000:3000"
+      - "${WORKER_PORT}:3000"
     networks:
       - backend
     depends_on:
       - db
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-      restart_policy:
-        condition: on-failure
 
 networks:
   backend:

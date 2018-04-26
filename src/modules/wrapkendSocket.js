@@ -4,7 +4,8 @@ require('dotenv').config({
 });
 import path from 'path'
 var modules = require('./')
-const SOCKET_URL = path.join(process.env.WRAPKEND_SOCKET + '/worker').replace('http:/', 'http://')
+const URI = process.env.NODE_ENV==='production'?process.env.WRAPKEND_SOCKET_PRODUCTION:process.env.WRAPKEND_SOCKET
+const SOCKET_URL = path.join(URI + '/worker').replace('http:/', 'http://')
 var socket = require('socket.io-client')(SOCKET_URL, {
 	autoConnect: false
 });
@@ -26,7 +27,7 @@ function mount(handler) {
 			console.log('Waiting socket server at', SOCKET_URL)
 			socket.open();
 		} else {
-			console.log('Waiting orders (', socket.id, ')')
+			//console.log('Waiting orders (', socket.id, ')')
 		}
 	}, 2000)
 }

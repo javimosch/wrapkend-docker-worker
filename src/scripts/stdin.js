@@ -1,11 +1,9 @@
 require('dotenv').config({
 	silent: true
 });
-const console = require('log-driver')({
-	level: process.env.LOGGER_LEVEL || "trace"
-});
+const console = require('../modules/console').create(require('path').basename(__filename))
 const path = require('path')
-const SOCKET_URL = path.join(process.env.WRAPKEND_SOCKET + '/worker').replace('http:/', 'http://')
+const SOCKET_URL = path.join(process.env.WRAPKEND_SOCKET + '/workerLogger').replace('http:/', 'http://')
 const socket = require('socket.io-client')(SOCKET_URL, {
 	autoConnect: false
 });
@@ -24,7 +22,7 @@ function ensureSocketConnection() {
 			console.trace('STDIN:Waiting socket server at', SOCKET_URL)
 			socket.open();
 		} else {
-			console.trace('STDIN: Waiting orders (', socket.id, ')')
+			//console.trace('STDIN: Waiting orders (', socket.id, ')')
 		}
 	}, 2000)
 }
@@ -38,6 +36,9 @@ function captureWorkerStdin() {
 
 	rl.on('line', function(line) {
 		console.trace('workerStdout', line);
-		socket.emit('workerStdout', line)
+		socket.emit('workerStdout', {
+			line,
+			project: process.env.project
+		})
 	})
 }
