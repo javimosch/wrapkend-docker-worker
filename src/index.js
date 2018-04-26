@@ -13,12 +13,36 @@ var startOptions = {
 }
 
 modules.wrapkendSocket.mount(socket => {
-	socket.on('start', params => {
-		modules.workerManager.start(Object.assign({},startOptions,params))
+	socket.on('start', async params => {
+		var result;
+		try {
+			result = await modules.workerManager.start(Object.assign({}, startOptions, params))
+
+		} catch (err) {
+			result = err;
+		}
+		if (params.id) {
+			socket.emit('start_' + params.id, result)
+		}
 	})
 	socket.on('stop', params => {
 		modules.workerManager.stop()
 	})
 	socket.on('exec', modules.socketFunctions.exec(socket))
 	socket.on('run', modules.socketFunctions.run(socket))
+
+	autoStart().catch(console.error)
+
 })
+
+async function autoStart() {
+	if (process.env.WRAPKEND_PROJECT_KEY && process.env.WRAPKEND_PROJECT_ID) {
+		var res = await modules.workerManager.start(Object.assign({}, startOptions, {
+			env: {
+				project: process.env.WRAPKEND_PROJECT_ID,
+				serverKey: process.env.WRAPKEND_PROJECT_KEY
+			}
+		}))
+		console.info('Worker initialized with api key', res)
+	}
+}

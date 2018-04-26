@@ -35,7 +35,7 @@ function run(socket) {
 				err: null,
 				result: await eval(`(async function evaluation(){
 					var params = ${JSON.stringify(options.params||{},null,2)};
-					return await modules.workerManager.${options.name}(params)})()`)
+					return await modules.${options.name}(params)})()`)
 			}
 		} catch (err) {
 			res = {

@@ -25,6 +25,11 @@ async function checkStatus() {
 }
 
 async function start(options = {}) {
+
+	if(!options.env && options.env.project){
+		throw new Error('WORKER_ENV_PROJECT_MISSING')
+	}
+
 	await stop()
 	
 	const workingPath = modules.fs.getWorkingPath()
@@ -48,4 +53,7 @@ async function start(options = {}) {
 
 		}
 	});
+	return {
+		done:true
+	}
 }

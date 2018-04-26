@@ -9,7 +9,7 @@ module.exports = {
 				args.splice(0, 1)
 				args = args.map(arg=>{
 					if(typeof arg == 'object'){
-						return JSON.stringify(arg,null,2)
+						return JSON.stringify(arg)
 					}else{
 						return arg
 					}
@@ -18,7 +18,7 @@ module.exports = {
 					file,
 					level,
 					message: args
-				}, null, 2);
+				});
 			}
 		});
 		console.log = console.trace
