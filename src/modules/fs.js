@@ -1,10 +1,14 @@
 const console = require('./console').create(require('path').basename(__filename))
 var path = require('path');
 const sander = require('sander')
-const tempDir = require('temp-dir');
+var tempDir = require('temp-dir');
 const appName = process.env.APP_NAME || 'wrapkend-worker'
 const sequential = require('promise-sequential')
 var readdir = require("async-readdir");
+
+if(process.env.WRAPKEND_TEMP_DIR){
+	tempDir = process.env.WRAPKEND_TEMP_DIR
+}
 
 module.exports = {
 	getWorkingPath,
@@ -19,6 +23,7 @@ function getWorkingPath(){
 
 function getFunctions() {
 	return new Promise((resolve, reject) => {
+		console.log('getFunctions from',getCategoryPath('functions'))
 		readdir.read(getCategoryPath('functions'), (error, files) => {
 			if (error) {
 				if (error.message.indexOf('ENOENT') !== -1) {
@@ -38,6 +43,7 @@ function getFileNamePath(category, fileName) {
 }
 
 function getCategoryPath(category, fileName) {
+	console.log('getCategoryPath',path.join(tempDir, appName, category))
 	return path.join(tempDir, appName, category)
 }
 
