@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+ - "9.5"
+install:
+  - yarn build
+script:
+  - yarn start:tests
+branches:
+  only:
+  - master
+cache:
+  directories:
+    - node_modules

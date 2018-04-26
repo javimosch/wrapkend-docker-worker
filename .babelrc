@@ -1,0 +1,18 @@
+{
+  "presets": [
+  	["env", {
+      "targets": {
+        "node": "9.5"
+      }
+    }]
+    ],
+   "plugins":[
+   ["module-resolver", {
+      
+      "alias": {
+        "modules": "../modules",
+        "module": "../modules",
+      }
+    }]
+    ]
+}

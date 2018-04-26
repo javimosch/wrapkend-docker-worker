@@ -1,0 +1,7 @@
+node_modules
+dist
+src/actions/temp/
+src/actions/temp/_temp*
+*-error.log
+.env
+!*logging*
